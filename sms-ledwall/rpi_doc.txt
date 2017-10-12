@@ -1,0 +1,14 @@
+arch packages: pacman -S jdk8-openjdk python2 python2-virtualenv python2-pillow pyton2-wheel base-devel gcc
+
+mkcd led_wall
+mkdir p2-venv
+virtualenv2 p2-venv
+source p2-venv/bin/activate
+pip2 install setuptools
+git clone https://github.com/podshumok/python-smpplib.git
+python2 python-smpplib/setup.py install
+pip2 install luma.led_matrix
+git clone https://github.com/smn/logica-smpp-sim.git
+pip2 install luma.led_matrix
+
+### Follow https://wiki.archlinux.org/index.php/Raspberry_Pi#I.2FO_pins to activate spi on rpi

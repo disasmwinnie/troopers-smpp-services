@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Flask-SocketIO Test</title>
+        {% assets output="js/ressources.js", "js/jquery-3.2.0.min.js", "js/socket.io.min.js", "js/bootstrap.min.js" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+
+        {% assets output="css/ressources.css", "css/bootstrap.min.css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">
+        {% endassets %}
+
+        <script type="text/javascript" charset="utf-8">
+
+function htmlEncode(value){
+  // Shamelessly stolen from https://stackoverflow.com/questions/14346414/how-do-you-do-html-encode-using-javascript
+  return $('<div/>').text(value).html();
+}
+$(document).ready(function(){
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/tictactoe');
+    socket.on('update_players', function(msg) {
+		d = JSON.parse(msg.data);
+		$('#players').text(d['data']);
+    });
+    socket.on('update_game', function(msg) {
+		d = JSON.parse(msg.data);
+		$('#00').html('<h3>' + htmlEncode(d['game_f'][0][0]) + '</h3>');
+        $('#01').html('<h3>' + htmlEncode(d['game_f'][0][1]) + '</h3>');
+        $('#02').html('<h3>' + htmlEncode(d['game_f'][0][2]) + '</h3>');
+        $('#10').html('<h3>' + htmlEncode(d['game_f'][1][0]) + '</h3>');
+        $('#11').html('<h3>' + htmlEncode(d['game_f'][1][1]) + '</h3>');
+        $('#12').html('<h3>' + htmlEncode(d['game_f'][1][2]) + '</h3>');
+        $('#20').html('<h3>' + htmlEncode(d['game_f'][2][0]) + '</h3>');
+        $('#21').html('<h3>' + htmlEncode(d['game_f'][2][1]) + '</h3>');
+        $('#22').html('<h3>' + htmlEncode(d['game_f'][2][2]) + '</h3>');
+        $('#status').text(d['status']);
+    });
+});
+        </script>
+    </head>
+    <body>
+        <h1>Flask-SocketIO Test</h1>
+        <h2>Receive:</h2>
+        <div id="log"></div>
+
+        <div class="jumbotron text-center">
+            <h1>TicTacToe over SMS @ nr 2024</h1>
+            <h3 id='players'>Nobody is playing</h3>
+            <p>Send "join", wait for second player, then coordinates as "X Y" (separated by space). To leave send "exit".</p>
+			<p>X and Y are elements of {0,1,2}. Coordinates begin at the bottom left corner.
+			The layout looks really bad, I know, but we have websockets - so it's alright.</p>
+        </div>
+        <div class="container" align="center">
+           <div class="row">
+			   <div class="col-md-4" id="20"><h3>20</h3></div>
+			   <div class="col-md-4" id="21"><h3>21</h3></div>
+			   <div class="col-md-4" id="22"><h3>22</h3></div>
+           </div>
+           <hr />
+		   </hr>
+           <div class="row">
+             <div class="col-md-4" id="10"><h3>10</h3></div>
+             <div class="col-md-4" id="11"><h3>11</h3></div>
+             <div class="col-md-4" id="12"><h3>12</h3></div>
+           </div>
+           <hr />
+           <div class="row">
+             <div class="col-md-4" id="00"><h3>00</h3></div>
+             <div class="col-md-4" id="01"><h3>01</h3></div>
+             <div class="col-md-4" id="02"><h3>02</h3></div>
+           </div>
+         </div>
+        <div class="jumbotron text-center">
+            <h3>STATUS:</h3>
+            <p id="status">Nobody is playing :-/</p>
+        </div>
+
+    </body>
+</html>
